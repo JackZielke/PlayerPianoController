@@ -8,7 +8,7 @@ extern const bool DEBUG_MODE = false;
 void setup()
 {
 	const int SHIFT_REGISTER_POWER_PIN = 19;
-	
+
 	intitializeRegisters();
 	delay(2000);
 

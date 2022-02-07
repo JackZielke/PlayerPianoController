@@ -4,8 +4,8 @@
 const int ShiftPWM_latchPin=18; //values assigned before includes
 const bool ShiftPWM_invertOutputs = false;
 const bool ShiftPWM_balanceLoad = false;
-#include <ShiftPWM.h>
-#include <CShiftPWM.h>
+#include "ShiftPWM.h"
+#include "CShiftPWM.h"
 #include "shiftRegister.h"
 
 void conformVelocity(uint8_t* velocity);
@@ -37,12 +37,9 @@ void conformVelocity(uint8_t* velocity)
 
 void testRegisters()
 {
-	for(int led = 0; led < 88; led++)
-	{
+	for(int led = 0; led < 88; led++) {
 		ShiftPWM.SetOne(led, MAX_PWM);
 		delay(50);
 		ShiftPWM.SetOne(led, 0);
 	}
 }
-
-
