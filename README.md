@@ -2,7 +2,7 @@
 Arduino/esp32 code for making a [DIY Player Piano](https://www.youtube.com/watch?v=S7Bd992k368).  
 This is a fork from the [original project](https://github.com/bbswitzer/PianoProject), with some improvements:
 - usage of ESP32-BLE-MIDI library (improving compatibility with windows / apple / android)
-- adding wifi MIDI capability
+- adding wifi MIDI capability (you can use [rtpMidi](https://www.tobias-erichsen.de/software/rtpmidi.html) and [loopMidi](https://www.tobias-erichsen.de/software/loopmidi.html) for connecting to it from windows)
 - various bugfixes
 - last key of piano (88) is used for sustain pedal instead of more electronics connected to ESP32
 - schemas and solenoid board PCB that I created for making this project
