@@ -7,7 +7,7 @@ This is a fork from the [original project](https://github.com/bbswitzer/PianoPro
 - last key of piano (88) is used for sustain pedal instead of more electronics connected to ESP32
 - schemas and solenoid board PCB that I created for making this project
 
-Original project informations can be [found here](brandonswitzer.squarespace.com/player-piano).
+Original project informations can be [found here](https://brandonswitzer.squarespace.com/player-piano).
 
 Boards are connected using chained serial:  
 `control-box TX -> RX brain TX -> RX note-handler`
