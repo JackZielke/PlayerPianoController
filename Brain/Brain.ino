@@ -1,3 +1,5 @@
+#include <dummy.h>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic warning "-fpermissive"
 #include <stdio.h>
@@ -8,18 +10,20 @@
 #include "settings.h"
 #include "serial.h"
 #include "note.h"
-#include "midi.h"
 #include "bluetooth.h"
+#include "wifihandle.h"
 #include "main.h"
 #pragma GCC diagnostic pop
+
 const bool DEBUG_MODE = false;
 
-void resetAll()
-{
-	acceptMidi = false; //turn midi off during reset to prevent errors
+#define LED_BUILTIN 2
 
-	for(int noteIndex = 0; noteIndex < 88; noteIndex++)
-	{
+void resetAll() {
+	// turn midi off during reset to prevent errors
+	acceptMidi = false;
+
+	for (int noteIndex = 0; noteIndex < 87; noteIndex++) {
 		notes[noteIndex].resetSchedule();
 	}
 	Note::resetInstances();
@@ -28,8 +32,7 @@ void resetAll()
 	acceptMidi = true;
 }
 
-void flashLED()
-{
+void flashLED() {
 	digitalWrite(LED_BUILTIN, HIGH);
 	delay(100);
 	digitalWrite(LED_BUILTIN, LOW);
@@ -40,33 +43,34 @@ void flashLED()
 	delay(100);
 }
 
-void setup()
-{
-	const int SUSTAIN_PIN = 13;
-
+void setup() {
 	pinMode(LED_BUILTIN, OUTPUT);
 	Serial.begin(38400);
-	initializeBluetooth();
 
-	//create sustain PWM output. this can't be done by the Pro Micro because the shift registers are filled up
-	ledcSetup(0, 100, 8);
-	ledcAttachPin(SUSTAIN_PIN, 0);
+	// wait for settings from pro micro
+	// todo: move settings to flash/eeprom
+	while (millis() < 10000) {
+		checkForSerial();
+	}
+
+	initializeBluetooth();
+  initializeWifi();
+	// We use note88 (last note on the piano) for sustain pedal output
 }
 
-void loop()
-{
+void loop() {
 	checkForSerial();
+	loopWifi();
 
-	for(int noteIndex = 0; noteIndex < 88; noteIndex++)
-	{
+	for (int noteIndex = 0; noteIndex < 87; noteIndex++) {
 		notes[noteIndex].checkSchedule();
 		notes[noteIndex].checkForErrors();
 	}
+
 	sustain.checkSchedule();
 	sustain.checkForErrors();
 
-	if(millis() >= nextReset)
-	{
+	if (millis() >= nextReset) {
 		//first reset will happen immediately and midi will begin to accept after this
 		resetAll();
 		nextReset = millis() + Setting::autoResetMs;

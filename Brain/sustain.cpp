@@ -2,10 +2,11 @@
 #include "sustain.h"
 #include "serial.h"
 #include "settings.h"
+#include "note.h"
 
-Sustain sustain;
+SustainPedal sustain;
 
-Sustain::Sustain()
+SustainPedal::SustainPedal()
 {
 	//initialize one row of vectors so program won't crash while comparing
 	//initialize sustain as off by default
@@ -17,7 +18,7 @@ Sustain::Sustain()
 	schedule[OFF].push_back(millis());
 }
 
-void Sustain::prepareToSchedule(uint8_t velocity)
+void SustainPedal::prepareToSchedule(uint8_t velocity)
 {
 	const uint8_t SUSTAIN_MIN_VELOCITY = 64;
 	if(Setting::handleNotes && Setting::scheduleNotes)
@@ -30,13 +31,13 @@ void Sustain::prepareToSchedule(uint8_t velocity)
 	} else
 	{
 		if(velocity < SUSTAIN_MIN_VELOCITY)
-			ledcWrite(0, 0);
+			sendMidiToProMicro(SUSTAIN_NOTE, 0); // ledcWrite(0, 0);
 		else
-			ledcWrite(0, 255);
+			sendMidiToProMicro(SUSTAIN_NOTE, 127); // ledcWrite(0, 255);
 	}
 }
 
-void Sustain::checkSchedule()
+void SustainPedal::checkSchedule()
 {
 	unsigned long ms = millis();
 	//less checks for sustain because it's slower and less important
@@ -44,13 +45,13 @@ void Sustain::checkSchedule()
 		ms >= schedule[OFF].at(1) && schedule[OFF].at(1) >= schedule[DEACTIVATION].at(1))
 	{
 		schedule[DEACTIVATION].erase(schedule[DEACTIVATION].begin()++);
-		ledcWrite(0, 0);
+		sendMidiToProMicro(SUSTAIN_NOTE, 0); // ledcWrite(0, 0);
 	}
 	if(schedule[ACTIVATION].size() > 1 && schedule[OFF].size() > 1 &&
 		ms >= schedule[ACTIVATION].at(1) && schedule[ACTIVATION].at(1) >= schedule[OFF].at(1))
 	{
 		schedule[OFF].erase(schedule[OFF].begin()++);
-		ledcWrite(0, 255);
+		sendMidiToProMicro(SUSTAIN_NOTE, 127); // ledcWrite(0, 255);
 	}
 	if(schedule[ON].size() > 1 && schedule[ACTIVATION].size() > 1 &&
 		ms >= schedule[ON].at(1) && schedule[ON].at(1) >= schedule[ACTIVATION].at(1))
@@ -61,28 +62,28 @@ void Sustain::checkSchedule()
 		ms >= schedule[DEACTIVATION].at(1) && schedule[DEACTIVATION].at(1) >= schedule[ON].at(1))
 	{
 		schedule[ON].erase(schedule[ON].begin()++);
-		ledcWrite(0, 30);
+		sendMidiToProMicro(SUSTAIN_NOTE, 15); // ledcWrite(0, 30);
 	}
 }
 
-void Sustain::checkForErrors()
+void SustainPedal::checkForErrors()
 {
 	unsigned long ms = millis();
 	if(ms >= timeSinceActivation + Setting::sustainTimeoutMs && timeSinceActivation > 0) resetSchedule();
 	if(schedule[ON].size() > 1) if(ms >= schedule[ON].at(1) + Setting::sustainTimeoutMs) resetSchedule();
 }
 
-void Sustain::resetSchedule()
+void SustainPedal::resetSchedule()
 {
 	for(int index = 0; index < 4; index++)
 		schedule[index].resize(1);
 	schedule[OFF].push_back(millis());
 	timeSinceActivation = 0;
 	instances = 0;
-	ledcWrite(0, 0);
+	sendMidiToProMicro(SUSTAIN_NOTE, 0); // ledcWrite(0, 0);
 }
 
-void Sustain::scheduleSustain(bool state)
+void SustainPedal::scheduleSustain(bool state)
 {
 	unsigned long ms = millis();
 	unsigned long msAndDelay = ms + fullDelay;

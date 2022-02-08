@@ -4,7 +4,9 @@
 #include <Arduino.h>
 #include <vector>
 
-class Sustain
+#define SUSTAIN_NOTE 87
+
+class SustainPedal
 {
 private:
 	typedef std::vector<unsigned long> scheduleV_t;
@@ -21,13 +23,13 @@ private:
 
 	void scheduleSustain(bool state);
 public:
-	Sustain();
+	SustainPedal();
 	void prepareToSchedule(uint8_t velocity);
 	void checkSchedule();
 	void checkForErrors();
 	void resetSchedule();
 };
 
-extern Sustain sustain;
+extern SustainPedal sustain;
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef BLUETOOTH_H
-#define BLUETOOTH_H
+#ifndef WIFIHANDLE_H
+#define WIFIHANDLE_H
 
 #include <Arduino.h>
 
@@ -10,8 +10,9 @@
 #define MAX_NOTE_VELOCITY 127
 #define RESET_LENGTH      152
 #define RESET_LENGTH2     154
-#define SUSTAIN_NOTE      87
+// #define SUSTAIN_NOTE 87
 
-void initializeBluetooth();
+void initializeWifi();
+void loopWifi();
 
 #endif

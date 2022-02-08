@@ -23,34 +23,36 @@ namespace SettingID //so a using statement can be used in the switch statement
 		SUSTAIN_TIMEOUT_MS,
 		AUTO_RESET_MS,
 		MAX_LEFT_NOTES,
-		MAX_RIGHT_NOTES
+		MAX_RIGHT_NOTES,
+		WIFI_AP
 	};
 }
 
 extern int           fullDelay;
-extern bool       acceptMidi;
+extern bool          acceptMidi;
 extern unsigned long nextReset;
 
 namespace Setting
 {
 	extern bool handleNotes;
 	extern bool scheduleNotes;
-	extern int     minNoteVelocity;
-	extern int     minSolenoidPWM;
-	extern int     minStartupMs;
-	extern int     maxStartupMs;
-	extern int     velocityVar;
-	extern int     minDeactivateMs;
-	extern int     maxDeactivateMs;
-	extern int     fastDeactivateMs;
-	extern int     sustainOnMs;
-	extern int     sustainOffMs;
-	extern int     noteTimeoutMs;
-	extern int     sustainTimeoutMs;
-	extern int     autoResetMs;
-	extern int     maxLeftNotes;
-	extern int     maxRightNotes;
-	extern int     volume;
+	extern int  minNoteVelocity;
+	extern int  minSolenoidPWM;
+	extern int  minStartupMs;
+	extern int  maxStartupMs;
+	extern int  velocityVar;
+	extern int  minDeactivateMs;
+	extern int  maxDeactivateMs;
+	extern int  fastDeactivateMs;
+	extern int  sustainOnMs;
+	extern int  sustainOffMs;
+	extern int  noteTimeoutMs;
+	extern int  sustainTimeoutMs;
+	extern int  autoResetMs;
+	extern int  maxLeftNotes;
+	extern int  maxRightNotes;
+	extern bool wifiAp;
+	extern int  volume;
 }
 
 void setVolume(int newVolume);

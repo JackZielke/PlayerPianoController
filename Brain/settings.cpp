@@ -4,9 +4,9 @@
 #include "serial.h"
 
 //settings within the program
-int           fullDelay      = 0;
-bool       acceptMidi     = false;
-unsigned long nextReset      = 0; //first reset will happen immediately
+int           fullDelay  = 0;
+bool          acceptMidi = false;
+unsigned long nextReset  = 0; //first reset will happen immediately
 
 //settings changed by the control box
 namespace Setting
@@ -27,6 +27,7 @@ namespace Setting
 	int     autoResetMs      = 360000;
 	int     maxLeftNotes     = 26;
 	int     maxRightNotes    = 22;
+	bool    wifiAp           = false;
 	int     volume           = 100;
 }
 
@@ -49,7 +50,6 @@ void updateSetting(SettingID::SettingID setting, int value)
 		break;
 	case PWM_PERCENT:
 		//only setting passed to pro micro
-		extern const byte SETTING_HEADER;
 		customSerialToProMicro(SETTING_HEADER, value, value);
 		break;
 	case MIN_STARTUP_MS:
@@ -96,6 +96,9 @@ void updateSetting(SettingID::SettingID setting, int value)
 	case MAX_RIGHT_NOTES:
 		maxRightNotes = value;
 		break;
+	case WIFI_AP:
+		wifiAp = value;
+		break;
 	}
 }
 
@@ -117,5 +120,3 @@ void msReset()
 	//calculate the total maximum time for a note cycle as a reference when scheduling keys
 	fullDelay = maxStartupMs + Note::getNoteVelocityMs(0) + maxDeactivateMs;
 }
-
-
