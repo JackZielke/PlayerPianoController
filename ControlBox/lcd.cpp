@@ -6,7 +6,7 @@
 
 extern LiquidCrystal_I2C lcd;
 
-const String MENU_NAMES[] ={
+const String MENU_NAMES[] = {
   "Handle Notes",
   "Schedule Notes",
   "Min Accepted Vel",
@@ -24,98 +24,96 @@ const String MENU_NAMES[] ={
   "Auto Reset Mins",
   "Max Left Keys",
   "Max Right Keys",
-	"Force wifi AP"
+  "Enable Wifi",
+  "Force wifi AP",
+  "Enable BLE"
 };
 
-MenuStates       menuState = MenuStates::WELCOME;
+int              menuState = MS_WELCOME;
 int              currentMenu = -1; //initialize current menu as invalid
 const int        NUM_OF_MENUS         = sizeof(MENU_NAMES) / sizeof(MENU_NAMES[0]);
 const int        SETTING_MENU_TIMEOUT = 20000;
-extern const int SPECIAL_MENU_TIMEOUT = 3000;
+extern const int SPECIAL_MENU_TIMEOUT = 2000;
 unsigned long    exitScreen;
 
-void initializeLCD()
-{
+void initializeLCD() {
   uint8_t note[8]  = {0x2, 0x3, 0x2, 0xe, 0x1e, 0xc, 0x0};
-	lcd.begin();
-	lcd.backlight();
+  lcd.begin();
+  lcd.backlight();
   lcd.createChar(1, note);
 }
 
-void printHomeScreen()
-{
-	lcd.clear();
-	lcd.setCursor(1, 0);
-	lcd.print("Welcome to vik");
-	lcd.setCursor(2, 1);
-	lcd.print("Player Piano");
+void printHomeScreen() {
+  lcd.clear();
+  lcd.setCursor(1, 0);
+  lcd.print("Welcome to vik");
+  lcd.setCursor(2, 1);
+  lcd.print("Player Piano");
   lcd.setCursor(0, 1);
   lcd.write(1);
   lcd.setCursor(15, 1);
   lcd.write(1);
 }
 
-void updateDisplay()
-{
-	lcd.clear();
-	switch(menuState)
-	{
-	case MenuStates::WELCOME:
-		printHomeScreen();
-		break;
-	case MenuStates::SETTINGS:
-		lcd.print(MENU_NAMES[currentMenu]);
-		lcd.setCursor(0, 1);
-		//see if the current menu is true or false or just a number
-		if(currentMenu != static_cast<int>(SettingID::SCHEDULE_NOTES) &&
-		   currentMenu != static_cast<int>(SettingID::HANDLE_NOTES) &&
-			 currentMenu != static_cast<int>(SettingID::WIFI_AP)) // if current menu is not a bool menu
-			lcd.print(EEPROM.read(currentMenu));
-		else
-		{
-			if(EEPROM.read(currentMenu))
-				lcd.print("True");
-			else
-				lcd.print("False");
-		}
-		break;
-	case MenuStates::VOLUME:
-		lcd.setCursor(0, 0);
-		lcd.print("Volume");
-		lcd.print("          ");
-		lcd.setCursor(0, 1);
-		lcd.print(lastAnalog);
-		lcd.print("%            ");
-		break;
-	case MenuStates::RESET:
-		lcd.clear();
-		lcd.setCursor(0, 0);
-		lcd.print("Resetting Keys");
-		lcd.setCursor(0, 1);
-		lcd.print("...");
-		break;
-	}
+void updateDisplay() {
+  lcd.clear();
+  switch (menuState) {
+    case MS_WELCOME:
+      printHomeScreen();
+      break;
+
+    case MS_SETTINGS:
+      lcd.print(MENU_NAMES[currentMenu]);
+      lcd.setCursor(0, 1);
+      if (menuIsBool(currentMenu)) {
+        if (EEPROM.read(currentMenu)) {
+          lcd.print("Yes");
+        } else {
+          lcd.print("No");
+        }
+      } else {
+        lcd.print(EEPROM.read(currentMenu));
+      }
+      break;
+
+    case MS_VOLUME:
+      lcd.setCursor(0, 0);
+      lcd.print("Volume");
+      lcd.print("          ");
+      lcd.setCursor(0, 1);
+      lcd.print(lastAnalog);
+      lcd.print("%            ");
+      break;
+
+    case MS_RESET:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Resetting Keys");
+      lcd.setCursor(0, 1);
+      lcd.print("...");
+      break;
+  }
 }
 
-void checkSchedule()
-{
-	unsigned long ms = millis();
-	if(ms >= lastPressedOverall + SETTING_MENU_TIMEOUT && lastPressedOverall > 0)
-	{
-		lastPressedOverall = 0;
-		if(menuState == MenuStates::SETTINGS) //if another screen isn't scheduled
-		{
-			menuState = MenuStates::WELCOME;
-			updateDisplay();
-		}
-	}
-	if(ms >= exitScreen && exitScreen > 0)
-	{
-		exitScreen = 0;
-		if(lastPressedOverall == 0) //if setting menu is timed out
-			menuState = MenuStates::WELCOME;
-		else
-			menuState = MenuStates::SETTINGS;
-		updateDisplay();
-	}
+void checkSchedule() {
+  unsigned long ms = millis();
+
+  if (ms >= lastPressedOverall + SETTING_MENU_TIMEOUT && lastPressedOverall > 0) {
+    lastPressedOverall = 0;
+    // if another screen isn't scheduled
+    if (menuState == MS_SETTINGS) {
+      menuState = MS_WELCOME;
+      updateDisplay();
+    }
+  }
+
+  if (ms >= exitScreen && exitScreen > 0) {
+    exitScreen = 0;
+    // if setting menu is timed out
+    if (lastPressedOverall == 0)
+      menuState = MS_WELCOME;
+    else
+      menuState = MS_SETTINGS;
+    updateDisplay();
+  }
 }

@@ -4,21 +4,20 @@
 #include "serial.h"
 #include "input.h"
 
-void changeSetting(int changeBy)
-{
-	if(currentMenu != static_cast<int>(SettingID::SCHEDULE_NOTES) &&
-	   currentMenu != static_cast<int>(SettingID::HANDLE_NOTES)) //if current menu is not a bool menu
-		EEPROM.write(currentMenu, EEPROM.read(currentMenu) + changeBy);
-	else
-		EEPROM.write(currentMenu, !(static_cast<bool>(EEPROM.read(currentMenu))));
+bool menuIsBool(int menu) {
+  if (menu == S_SCHEDULE_NOTES ||
+      menu == S_HANDLE_NOTES ||
+      menu == S_ENABLE_WIFI ||
+      menu == S_WIFI_AP ||
+      menu == S_ENABLE_BLE) {
+    return true;
+  }
+  return false;
 }
 
-void sendAllSettings()
-{
-	for(int index = 0; index < NUM_OF_MENUS; index++)
-	{
-		sendSerialToMain(SETTING_HEADER, index, EEPROM.read(index));
-		delay(50);
-	}
-	sendSerialToMain(VOLUME_HEADER, lastAnalog, lastAnalog);
+void changeSetting(int changeBy) {
+  if (menuIsBool(currentMenu))
+    EEPROM.write(currentMenu, !(static_cast<bool>(EEPROM.read(currentMenu))));
+  else
+    EEPROM.write(currentMenu, EEPROM.read(currentMenu) + changeBy);
 }

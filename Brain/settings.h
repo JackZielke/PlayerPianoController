@@ -3,10 +3,9 @@
 
 #include <Arduino.h>
 
-namespace SettingID //so a using statement can be used in the switch statement
-{
-	enum SettingID
-	{
+// so a using statement can be used in the switch statement
+namespace SettingID {
+	enum SettingID {
 		HANDLE_NOTES,
 		SCHEDULE_NOTES,
 		MIN_ACCEPTED_VEL,
@@ -24,7 +23,9 @@ namespace SettingID //so a using statement can be used in the switch statement
 		AUTO_RESET_MS,
 		MAX_LEFT_NOTES,
 		MAX_RIGHT_NOTES,
-		WIFI_AP
+    ENABLE_WIFI,
+		WIFI_AP,
+    ENABLE_BLE
 	};
 }
 
@@ -32,8 +33,7 @@ extern int           fullDelay;
 extern bool          acceptMidi;
 extern unsigned long nextReset;
 
-namespace Setting
-{
+namespace Setting {
 	extern bool handleNotes;
 	extern bool scheduleNotes;
 	extern int  minNoteVelocity;
@@ -51,11 +51,14 @@ namespace Setting
 	extern int  autoResetMs;
 	extern int  maxLeftNotes;
 	extern int  maxRightNotes;
+  extern bool enableWifi;
 	extern bool wifiAp;
+  extern bool enableBLE;
 	extern int  volume;
 }
 
 void setVolume(int newVolume);
+void initializeSettings();
 void updateSetting(SettingID::SettingID setting, int value);
 void msReset();
 

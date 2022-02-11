@@ -17,9 +17,6 @@ void setup() {
   if (DEBUG_MODE) Serial.begin(38400);
   Serial1.begin(38400);
 
-  // send all data to ESP32 for initialization
-  sendAllSettings();
-
   initializeInputs();
   initializeLCD();
   printHomeScreen();

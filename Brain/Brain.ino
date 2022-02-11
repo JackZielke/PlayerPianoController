@@ -25,6 +25,7 @@ void resetAll() {
 
 	for (int noteIndex = 0; noteIndex < 87; noteIndex++) {
 		notes[noteIndex].resetSchedule();
+    delay(1);
 	}
 	Note::resetInstances();
 	sustain.resetSchedule();
@@ -47,20 +48,18 @@ void setup() {
 	pinMode(LED_BUILTIN, OUTPUT);
 	Serial.begin(38400);
 
-	// wait for settings from pro micro
-	// todo: move settings to flash/eeprom
-	while (millis() < 10000) {
-		checkForSerial();
-	}
-
-	initializeBluetooth();
-  initializeWifi();
+  initializeSettings();
+	if (Setting::enableBLE)
+    initializeBluetooth();
+  if (Setting::enableWifi)
+    initializeWifi();
 	// We use note88 (last note on the piano) for sustain pedal output
 }
 
 void loop() {
 	checkForSerial();
-	loopWifi();
+  if (Setting::enableWifi)
+  	loopWifi();
 
 	for (int noteIndex = 0; noteIndex < 87; noteIndex++) {
 		notes[noteIndex].checkSchedule();

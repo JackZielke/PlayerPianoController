@@ -13,7 +13,7 @@ APPLEMIDI_CREATE_INSTANCE(WiFiUDP, MIDI, "VikPlayerPiano", DEFAULT_CONTROL_PORT)
 
 void onNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
   extern bool acceptMidi;
-  if(acceptMidi && note <= MAX_NOTE_PITCH && note >= MIN_NOTE_PITCH && velocity > MIN_NOTE_VELOCITY) {
+  if(acceptMidi && note <= MAX_NOTE_PITCH && note >= MIN_NOTE_PITCH && velocity > Setting::minNoteVelocity) {
     notes[note - MIN_NOTE_PITCH].prepareToSchedule(velocity);
   }
   if(DEBUG_MODE) Serial.printf("[WIFI] Received note on : channel %d, note %d, velocity %d\n", channel, note, velocity);
@@ -71,7 +71,7 @@ void initializeWifi() {
   uint8_t retry;
 
   WiFi.setHostname("VikPlayerPiano");
-  if (!Setting::wifiAp) {
+  if (Setting::wifiAp == 0) {
     WiFi.begin(ssid, password);
   }
 
@@ -81,7 +81,7 @@ void initializeWifi() {
   }
 
   // try to connect to defined wifi, if failure, fallback to create a SoftAP
-  if (!Setting::wifiAp) {
+  if (Setting::wifiAp == 0) {
     retry = 10;
     while (WiFi.status() != WL_CONNECTED && retry > 0) {
       delay(500);

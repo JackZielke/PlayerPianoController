@@ -10,6 +10,5 @@
 #define VOLUME_HEADER  205
 
 void sendSerialToMain(uint8_t header, uint8_t setting, uint8_t value);
-void sendAllSettings();
 
 #endif

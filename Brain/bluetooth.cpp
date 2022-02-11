@@ -7,7 +7,6 @@
 
 void onNoteOn(uint8_t channel, uint8_t note, uint8_t velocity, uint16_t timestamp) {
   extern bool acceptMidi;
-  // extern uint8_t Setting::minNoteVelocity;
   if(acceptMidi && note <= MAX_NOTE_PITCH && note >= MIN_NOTE_PITCH && velocity > Setting::minNoteVelocity) {
     notes[note - MIN_NOTE_PITCH].prepareToSchedule(velocity);
   }

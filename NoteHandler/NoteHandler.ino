@@ -3,14 +3,13 @@
 #include "serial.h"
 #include "midi.h"
 
-extern const bool DEBUG_MODE = false;
+extern const bool DEBUG_MODE = true;
 
 void setup()
 {
 	const int SHIFT_REGISTER_POWER_PIN = 19;
 
 	intitializeRegisters();
-	delay(2000);
 
 	Serial.begin(38400);
 	Serial1.begin(38400);

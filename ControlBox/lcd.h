@@ -3,14 +3,12 @@
 
 #include <Arduino.h>
 
-enum class MenuStates
-{
-	WELCOME,
-	SETTINGS,
-	VOLUME,
-	RESET
-}; extern MenuStates menuState;
+#define MS_WELCOME 0
+#define MS_SETTINGS 1
+#define MS_VOLUME 2
+#define MS_RESET 3
 
+extern int           menuState;
 extern const String  MENU_NAMES[];
 extern const int     SPECIAL_MENU_TIMEOUT;
 extern const int     NUM_OF_MENUS;

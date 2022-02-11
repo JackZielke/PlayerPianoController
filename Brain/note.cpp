@@ -25,6 +25,7 @@ Note::Note()
 
 void Note::prepareToSchedule(uint8_t velocity)
 {
+  // Serial.printf("received note: %d force %d\n", id, velocity);
 	if(Setting::handleNotes)
 	{
 		calculateVolume(velocity);
@@ -86,8 +87,8 @@ void Note::checkForErrors()
 
 void Note::resetSchedule()
 {
-	if(DEBUG_MODE) Serial.print("Resetting schedule for note: ");
-	if(DEBUG_MODE) Serial.println(id);
+	// if(DEBUG_MODE) Serial.print("Resetting schedule for note: ");
+	// if(DEBUG_MODE) Serial.println(id);
 	for(int index = 0; index < 6; index++)
 	{
 		schedule[index].resize(1);
@@ -110,7 +111,7 @@ void Note::resetInstances()
 
 void Note::scheduleNote(uint8_t velocity)
 {
-	if(DEBUG_MODE) sendScheduleToSerial();
+	// if(DEBUG_MODE) sendScheduleToSerial();
 	unsigned long ms = millis();
 	unsigned long msAndDelay = ms + fullDelay;
 	using namespace Setting;
@@ -217,7 +218,7 @@ void Note::scheduleNote(uint8_t velocity)
 			}
 		}
 	}
-	if(DEBUG_MODE) sendScheduleToSerial();
+	// if(DEBUG_MODE) sendScheduleToSerial();
 }
 
 void Note::calculateVolume(uint8_t& velocity)
