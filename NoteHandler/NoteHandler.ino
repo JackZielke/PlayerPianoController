@@ -3,7 +3,7 @@
 #include "serial.h"
 #include "midi.h"
 
-extern const bool DEBUG_MODE = true;
+extern const bool DEBUG_MODE = false;
 
 void setup()
 {
