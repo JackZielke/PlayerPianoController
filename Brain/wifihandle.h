@@ -5,7 +5,7 @@
 
 #define SUSTAIN_DATA_BYTE 64
 #define MIN_NOTE_PITCH    21
-#define MAX_NOTE_PITCH    107 // -1 because last note is used for sustain
+// #define MAX_NOTE_PITCH    108 // defined in Brain.ino
 #define MIN_NOTE_VELOCITY 4 // MUST BE DYNAMIC (Setting::minNoteVelocity)
 #define MAX_NOTE_VELOCITY 127
 #define RESET_LENGTH      152

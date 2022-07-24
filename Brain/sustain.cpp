@@ -2,6 +2,7 @@
 #include "sustain.h"
 #include "serial.h"
 #include "settings.h"
+#include "main.h"
 #include "note.h"
 
 SustainPedal sustain;
@@ -30,10 +31,17 @@ void SustainPedal::prepareToSchedule(uint8_t velocity)
 			scheduleSustain(true);
 	} else
 	{
-		if(velocity < SUSTAIN_MIN_VELOCITY)
-			sendMidiToProMicro(SUSTAIN_NOTE, 0); // ledcWrite(0, 0);
-		else
-			sendMidiToProMicro(SUSTAIN_NOTE, 127); // ledcWrite(0, 255);
+		if(velocity < SUSTAIN_MIN_VELOCITY) {
+			if (SUSTAIN_KEY)
+				sendMidiToProMicro(SUSTAIN_NOTE, 0);
+			else
+				ledcWrite(0, 0);
+		 } else {
+			if (SUSTAIN_KEY)
+				sendMidiToProMicro(SUSTAIN_NOTE, 127);
+			else
+				ledcWrite(0, 255);
+		}
 	}
 }
 
@@ -45,13 +53,19 @@ void SustainPedal::checkSchedule()
 		ms >= schedule[OFF].at(1) && schedule[OFF].at(1) >= schedule[DEACTIVATION].at(1))
 	{
 		schedule[DEACTIVATION].erase(schedule[DEACTIVATION].begin()++);
-		sendMidiToProMicro(SUSTAIN_NOTE, 0); // ledcWrite(0, 0);
+		if (SUSTAIN_KEY)
+			sendMidiToProMicro(SUSTAIN_NOTE, 0);
+		else
+			ledcWrite(0, 0);
 	}
 	if(schedule[ACTIVATION].size() > 1 && schedule[OFF].size() > 1 &&
 		ms >= schedule[ACTIVATION].at(1) && schedule[ACTIVATION].at(1) >= schedule[OFF].at(1))
 	{
 		schedule[OFF].erase(schedule[OFF].begin()++);
-		sendMidiToProMicro(SUSTAIN_NOTE, 127); // ledcWrite(0, 255);
+		if (SUSTAIN_KEY)
+			sendMidiToProMicro(SUSTAIN_NOTE, 127);
+		else
+			ledcWrite(0, 255);
 	}
 	if(schedule[ON].size() > 1 && schedule[ACTIVATION].size() > 1 &&
 		ms >= schedule[ON].at(1) && schedule[ON].at(1) >= schedule[ACTIVATION].at(1))
@@ -62,7 +76,10 @@ void SustainPedal::checkSchedule()
 		ms >= schedule[DEACTIVATION].at(1) && schedule[DEACTIVATION].at(1) >= schedule[ON].at(1))
 	{
 		schedule[ON].erase(schedule[ON].begin()++);
-		sendMidiToProMicro(SUSTAIN_NOTE, 15); // ledcWrite(0, 30);
+		if (SUSTAIN_KEY)
+			sendMidiToProMicro(SUSTAIN_NOTE, 15);
+		else
+			ledcWrite(0, 30);
 	}
 }
 
@@ -80,7 +97,10 @@ void SustainPedal::resetSchedule()
 	schedule[OFF].push_back(millis());
 	timeSinceActivation = 0;
 	instances = 0;
-	sendMidiToProMicro(SUSTAIN_NOTE, 0); // ledcWrite(0, 0);
+	if (SUSTAIN_KEY)
+		sendMidiToProMicro(SUSTAIN_NOTE, 0);
+	else
+		ledcWrite(0, 0);
 }
 
 void SustainPedal::scheduleSustain(bool state)
