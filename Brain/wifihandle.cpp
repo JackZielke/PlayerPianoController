@@ -67,8 +67,19 @@ void WiFiEventDebug(WiFiEvent_t event) {
   }
 }
 
+void WiFiReset() {
+  WiFi.disconnect();
+  WiFi.mode(WIFI_OFF);
+  WiFi.mode(WIFI_STA);
+  WiFi.setAutoConnect(true);
+  WiFi.setAutoReconnect(true);
+  WiFi.persistent(true);
+}
+
 void initializeWifi() {
   uint8_t retry;
+
+  WiFiReset();
 
   WiFi.setHostname("VikPlayerPiano");
   if (Setting::wifiAp == 0) {

@@ -29,7 +29,7 @@ namespace Setting {
   int     maxLeftNotes     = 10;
   int     maxRightNotes    = 10;
   bool    enableWifi       = true;
-  bool    wifiAp           = true;
+  bool    wifiAp           = false;
   bool    enableBLE        = true;
   int     volume           = 100;
 }
@@ -42,7 +42,7 @@ void initializeSettings() {
   using namespace Setting;
   const int defaults[] = {
      1,   1,  4,  0, 18, 18, 35, 75, 80, 52,
-     91, 50, 10, 30,  6, 10, 10,  1,  1,  1,
+     91, 50, 10, 30,  6, 10, 10,  1,  0,  1,
      100, 0,  0,  0,  0,  0,  0,  0,  0,  0,
      0,  42
   };
